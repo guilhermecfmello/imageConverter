@@ -3,10 +3,12 @@ import basicFunctions as bf
 import sys
 
 
-imgName = bf.getArgs(sys.argv, "-i")
+imgName = "images/" + bf.getArgs(sys.argv, "-i")
 imgFormat = bf.getArgs(sys.argv, "-f")
 
 converter = ImageConverter(imgName)
+
+
 
 if(imgFormat == "cmyk"):
     converter.rgbToCmyk()
