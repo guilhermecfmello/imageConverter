@@ -62,11 +62,11 @@ class ImageConverter:
 		y = 1 - b / RGB_MAX
 		
 		# Getting k
-		minCmy = min(c,m,y)
-		c = (c - minCmy) / (1 - minCmy)
-		m = (m - minCmy) / (1 - minCmy)
-		y = (y - minCmy) / (1 - minCmy)
-		k = minCmy
+		k = min(c,m,y)
+		c = (c - k) / (1 - k)
+		m = (m - k) / (1 - k)
+		y = (y - k) / (1 - k)
+
 
 		return c, m, y, k
 	
@@ -123,8 +123,9 @@ class ImageConverter:
 
 	def __cmykRgbNormalizer(self, cmyk):
 		k = cmyk[3]
-		r = (cmyk[0] + k) * 255
-		g = (cmyk[1] + k) * 255
-		b = (cmyk[2] + k) * 255
+		r = (cmyk[0]) * 255
+		g = (cmyk[1]) * 255
+		b = (cmyk[2]) * 255
+		
 		tupla = [r,g,b]
 		return tupla
