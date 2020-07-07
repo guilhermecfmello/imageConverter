@@ -71,8 +71,20 @@ class ImageConverter:
 		return c, m, y, k
 	
 	def __rgbToHsiPix(self, r, g, b):
-		
-		theta = (((r-g)+(r-b))/2)/(((r-g)**2+((r-b)*(g-b)))/2)
+		print("R: " + str(r) + "   type: " + str(type(r)))
+		print("G: " + str(g) + "   type: " + str(type(g)))
+		print("B: " + str(b) + "   type: " + str(type(b)))
+	
+		R = np.uint(r)
+		G = np.uint(g)
+		B = np.uint(b)
+		dividend = ((R-G)+(R-B))/2
+		print("dividend: " + str(dividend) + "   type: " + str(type(dividend)))
+		# exit()
+		divisor = m.sqrt(((R-G)**2)+((R-B)*(G-B)))
+		theta = dividend/divisor
+		print(theta)
+		exit()
 		theta = m.acos(theta)
 		h = 0
 		if b <= g:
@@ -87,9 +99,9 @@ class ImageConverter:
 
 	def __hsiRgbNormalizer(self, hsi):
 		h,s,i = hsi[0],hsi[1],hsi[2]
-		r,g,b = 0
+		r,g,b = 0,0,0
 		if h >= 0 and h < 120:
-			b = i*(1-s])
+			b = i*(1-s)
 			r = i*(1 + (s*m.cos(h)/m.cos(60-h)))
 			g = 3*i-(r+b)
 		elif h >= 120 and h < 240:
