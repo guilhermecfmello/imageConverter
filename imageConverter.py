@@ -62,56 +62,30 @@ class ImageConverter:
 		c = (c - k) / (1 - k)
 		m = (m - k) / (1 - k)
 		y = (y - k) / (1 - k)
-
-
 		return c, m, y, k
 	
 	def __rgbToHsiPix(self, r, g, b):
-		# print("R: " + str(r) + "   type: " + str(type(r)))
-		# print("G: " + str(g) + "   type: " + str(type(g)))
-		# print("B: " + str(b) + "   type: " + str(type(b)))
-	
 		R,G,B = self.__rgbNormalizer(r,g,b)
 
 		dividend = ((R-G)+(R-B))/2
 		divisor = np.sqrt(((R-G)**2)+((R-B)*(G-B)))
 		try:
 			theta = m.acos(dividend/divisor)
-			# theta = np.arccos(dividend/divisor)
 		except:
 			print("Error calculation theta on HSI convertion")
-			# print(e)
-		
-		
 		if B <= G:
 			h = theta
 		else:
 			h = (2 * np.pi) - theta
-		# try:
-		# print(h)
 		dividend = 3*(min(R,G,B))
 		divisor = R+G+B
-		# if divisor == 0: divisor = 0.00000001
 		try:
 			s = 1 - (dividend / divisor)
 		except e:
-			print("S: " + s)
-			print("Dividend: " + dividend)
-			print("Divisor: " + divisor)
 			print(e)
-
-		# s = 1-((3/(R+G+B))*min(R,G,B))
-		# except e:
-		# 	print("H: " + str(h) + "   type: " + str(type(h)))
-		# 	print("S: " + str(s) + "   type: " + str(type(s)))
-		# 	print("I: " + str(i) + "   type: " + str(type(i)))
-		# 	print(e)
-		# 	exit()
-		
 		i = (R+G+B)/3
-		
-
 		return h,s,i
+
 	def __rgbNormalizer(self, r,g,b):
 		r = r / RGB_MAX
 		g = g / RGB_MAX
