@@ -11,8 +11,6 @@ RGB_MAX = 255
 
 
 class ImageConverter:
-
-
 	def __init__(self, imgName):
 		self.imgName = imgName
 
@@ -24,8 +22,7 @@ class ImageConverter:
 
 		x = len(img)
 		y = len(img[0])
-		data = np.zeros((x,y,3), dtype=np.uint8 )
-		originalData = data
+		data = np.zeros((x,y,3))
 		for i in range(len(img)):
 			for j in range(len(img[i])):
 				pixel = self.__rgbToHsiPix(img[i][j][0], img[i][j][1], img[i][j][2])
@@ -43,7 +40,6 @@ class ImageConverter:
 		x = len(img)
 		y = len(img[0])
 		data = np.zeros((x,y,3), dtype=np.uint8 )
-		originalData = data
 		for i in range(len(img)):
 			for j in range(len(img[i])):
 				pixel = self.__rgbToCmykPix(img[i][j][0], img[i][j][1], img[i][j][2])
@@ -71,31 +67,56 @@ class ImageConverter:
 		return c, m, y, k
 	
 	def __rgbToHsiPix(self, r, g, b):
-		print("R: " + str(r) + "   type: " + str(type(r)))
-		print("G: " + str(g) + "   type: " + str(type(g)))
-		print("B: " + str(b) + "   type: " + str(type(b)))
+		# print("R: " + str(r) + "   type: " + str(type(r)))
+		# print("G: " + str(g) + "   type: " + str(type(g)))
+		# print("B: " + str(b) + "   type: " + str(type(b)))
 	
-		R = np.uint(r)
-		G = np.uint(g)
-		B = np.uint(b)
+		R,G,B = self.__rgbNormalizer(r,g,b)
+
 		dividend = ((R-G)+(R-B))/2
-		print("dividend: " + str(dividend) + "   type: " + str(type(dividend)))
-		# exit()
-		divisor = m.sqrt(((R-G)**2)+((R-B)*(G-B)))
-		theta = dividend/divisor
-		print(theta)
-		exit()
-		theta = m.acos(theta)
-		h = 0
-		if b <= g:
+		divisor = np.sqrt(((R-G)**2)+((R-B)*(G-B)))
+		try:
+			theta = m.acos(dividend/divisor)
+			# theta = np.arccos(dividend/divisor)
+		except:
+			print("Error calculation theta on HSI convertion")
+			# print(e)
+		
+		
+		if B <= G:
 			h = theta
 		else:
-			h = 360 - theta
+			h = (2 * np.pi) - theta
+		# try:
+		# print(h)
+		dividend = 3*(min(R,G,B))
+		divisor = R+G+B
+		# if divisor == 0: divisor = 0.00000001
+		try:
+			s = 1 - (dividend / divisor)
+		except e:
+			print("S: " + s)
+			print("Dividend: " + dividend)
+			print("Divisor: " + divisor)
+			print(e)
+
+		# s = 1-((3/(R+G+B))*min(R,G,B))
+		# except e:
+		# 	print("H: " + str(h) + "   type: " + str(type(h)))
+		# 	print("S: " + str(s) + "   type: " + str(type(s)))
+		# 	print("I: " + str(i) + "   type: " + str(type(i)))
+		# 	print(e)
+		# 	exit()
 		
-		s = 1-((3/(r+g+b))*min(r,g,b))
-		i = (r+g+b)/3
+		i = (R+G+B)/3
+		
 
 		return h,s,i
+	def __rgbNormalizer(self, r,g,b):
+		r = r / RGB_MAX
+		g = g / RGB_MAX
+		b = b / RGB_MAX
+		return r,g,b
 
 	def __hsiRgbNormalizer(self, hsi):
 		h,s,i = hsi[0],hsi[1],hsi[2]
